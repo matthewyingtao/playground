@@ -1,3 +1,4 @@
+import { throttle } from "lodash";
 import { useEffect, useState } from "react";
 
 interface ElementSize {
@@ -12,11 +13,19 @@ export const useElementSize = (
 		width: 0,
 		height: 0,
 	});
+
+	const updateSize = () => {
+		const { width, height } = ref?.current?.getBoundingClientRect() || {
+			width: 0,
+			height: 0,
+		};
+		setSize({ width, height });
+	};
 	useEffect(() => {
-		if (ref.current) {
-			const { width, height } = ref.current.getBoundingClientRect();
-			setSize({ width, height });
-		}
+		updateSize();
+		const handleResize = throttle(updateSize, 100);
+		window.addEventListener("resize", handleResize);
+		return () => window.removeEventListener("resize", handleResize);
 	}, [ref]);
 	return size;
 };

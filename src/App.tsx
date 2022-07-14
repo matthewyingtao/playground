@@ -1,5 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import mountain from "./assets/mountain.jpg";
+import sky from "./assets/sky.jpg";
+import water from "./assets/water.jpg";
 import { useElementSize } from "./hooks/useDivSize";
 
 type XPos = "left" | "right";
@@ -12,40 +15,67 @@ type Position = {
 
 interface TileData {
 	id: number;
-	color: string;
+	image: string;
 	delay: number;
 	expandDelay: number;
 	x: XPos;
 	y: YPos;
+	title: string;
+	subtitle: string;
 }
+
+const ANIM_DURATION = 0.5; // seconds
+const DELAY_DURATION = 0.35; // seconds
+const BLOCK_HEIGHT = 400; // px
+const GAP = 20; // px
 
 function Tile({
 	containerWidth,
-	color,
+	image,
 	isActive,
 	onClick,
 	delay,
+	title,
+	subtitle,
 }: {
 	containerWidth: number;
-	color: string;
+	image: string;
 	isActive: boolean;
 	onClick: () => void;
 	delay: number;
+	title: string;
+	subtitle: string;
 }) {
 	return (
 		<motion.div
-			className={`flex h-full overflow-hidden pointer-events-none`}
-			animate={{ width: isActive ? "100%" : "50%" }}
-			transition={{ type: "spring", bounce: 0, delay, duration: 0.5 }}
-			style={{ backgroundColor: color }}
+			className={`flex h-full overflow-hidden pointer-events-none rounded-lg bg-center`}
+			animate={{
+				width: isActive ? containerWidth : containerWidth / 2 - GAP / 2,
+			}}
+			transition={{
+				type: "spring",
+				bounce: 0,
+				delay,
+				duration: ANIM_DURATION,
+			}}
+			style={{ backgroundImage: `url(${image})` }}
 		>
 			<div
-				className="shrink-0 pointer-events-auto"
+				className="shrink-0 pointer-events-auto flex flex-col justify-center p-4"
 				onClick={onClick}
 				style={{ width: containerWidth / 2 }}
 			>
-				<h1 className="text-xl">Title</h1>
-				<p>wow this kinda works</p>
+				<div className="max-w-[45ch] mx-auto text-center">
+					<h1
+						className="text-7xl font-black text-blue-600"
+						style={{
+							textShadow: "0 0 10px #77a8eb73",
+						}}
+					>
+						{title}
+					</h1>
+					<p className="text-3xl text-blue-900">{subtitle}</p>
+				</div>
 			</div>
 			<AnimatePresence exitBeforeEnter>
 				{isActive && (
@@ -53,16 +83,26 @@ function Tile({
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
-						style={{ width: containerWidth / 2 }}
-						className="shrink-0 pointer-events-auto"
+						style={{
+							width: containerWidth / 2,
+							background:
+								"linear-gradient(to left, rgba(220,240,255,0.75), rgba(220,240,255,0))",
+						}}
+						className="shrink-0 pointer-events-auto flex flex-col justify-center"
 					>
-						<h1 className="text-xl">Content</h1>
-						<p>
-							Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime
-							aliquid commodi aperiam, minima non ratione ab a quod possimus
-							amet placeat itaque quasi optio. Incidunt, minima delectus. Vitae,
-							voluptates aperiam.
-						</p>
+						<div className="text-lg text-gray-900 leading-relaxed p-4 max-w-[45ch] mx-auto">
+							<p>
+								Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime
+								aliquid commodi aperiam, minima non ratione ab a quod possimus
+								amet placeat itaque quasi optio. Incidunt, minima delectus.
+								Vitae, voluptates aperiam.
+							</p>
+							<p>
+								Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime
+								aliquid commodi aperiam, minima non ratione ab a quod possimus
+								amet placeat itaque quasi optio.
+							</p>
+						</div>
 					</motion.div>
 				)}
 			</AnimatePresence>
@@ -74,39 +114,48 @@ function App() {
 	const gridRef = useRef<HTMLDivElement>(null);
 	const containerSize = useElementSize(gridRef);
 
-	const positionTable = {
-		top: 0,
-		bottom: containerSize.height / 2,
-		left: 0,
-		right: containerSize.width / 2,
-	};
+	const positionTable = useMemo(
+		() => ({
+			top: 0,
+			bottom: BLOCK_HEIGHT + GAP,
+			left: 0,
+			right: containerSize.width / 2 + GAP / 2,
+		}),
+		[containerSize.width]
+	);
 
 	const [activeTile, setActiveTile] = useState(0);
 
 	const [tiles, setTiles] = useState<TileData[]>([
 		{
 			id: 0,
-			color: "#84cc16",
+			image: water,
 			x: "left",
 			y: "top",
 			delay: 0,
 			expandDelay: 0,
+			title: "Water",
+			subtitle: "Crisp, refreshing water.",
 		},
 		{
 			id: 1,
-			color: "#06b6d4",
+			image: sky,
 			x: "left",
 			y: "bottom",
 			delay: 0,
 			expandDelay: 0,
+			title: "Sky",
+			subtitle: "Cradle of the sun.",
 		},
 		{
 			id: 2,
-			color: "#f59e0b",
+			image: mountain,
 			x: "right",
 			y: "bottom",
 			delay: 0,
 			expandDelay: 0,
+			title: "Mountain",
+			subtitle: "Beautiful, towering peaks.",
 		},
 	]);
 
@@ -125,8 +174,10 @@ function App() {
 				...tile,
 				x: "left",
 				y: currentPos.y,
-				delay: newActivePos.x === "left" ? 1 : 1.5,
-				expandDelay: newActivePos.x === "left" ? 1 : 1.5,
+				delay:
+					newActivePos.x === "left" ? DELAY_DURATION * 2 : DELAY_DURATION * 3,
+				expandDelay:
+					newActivePos.x === "left" ? DELAY_DURATION * 2 : DELAY_DURATION * 3,
 			};
 		}
 		// if the x is the same but y is different, then it doesnt need to move
@@ -142,7 +193,7 @@ function App() {
 				...tile,
 				x: currentPos.x,
 				y: newY,
-				delay: newActivePos.x === "left" ? 0.5 : 1,
+				delay: newActivePos.x === "left" ? DELAY_DURATION : DELAY_DURATION * 2,
 				expandDelay: 0,
 			};
 		}
@@ -152,17 +203,13 @@ function App() {
 				...tile,
 				x: "right",
 				y: currentPos.y,
-				delay: 0.5,
+				delay: DELAY_DURATION,
 				expandDelay: 0,
 			};
 		}
 
 		console.error("this shouldn't happen.");
-		return {
-			...tile,
-			x: currentPos.x,
-			y: currentPos.y,
-		};
+		return tile;
 	};
 
 	const createOnClick = (tile: TileData) => {
@@ -184,10 +231,13 @@ function App() {
 
 	return (
 		<main className="h-full grid place-items-center">
-			<div className="w-full bg-gray-300 px-52 py-20">
+			<div className="w-full bg-gray-900 px-52 py-20">
 				<div
-					className="relative h-[800px] bg-teal-900"
-					style={{ overflowAnchor: "none" }}
+					className="relative"
+					style={{
+						overflowAnchor: "none",
+						height: `${2 * BLOCK_HEIGHT + GAP}px`,
+					}}
 					ref={gridRef}
 				>
 					{tiles.map((tile) => (
@@ -197,7 +247,7 @@ function App() {
 							transition={{
 								type: "spring",
 								bounce: 0,
-								duration: 0.5,
+								duration: ANIM_DURATION,
 								delay: tile.delay,
 							}}
 						>
@@ -205,9 +255,11 @@ function App() {
 								key={tile.id}
 								containerWidth={containerSize.width}
 								delay={tile.expandDelay}
-								color={tile.color}
+								image={tile.image}
 								isActive={tile.id === activeTile}
 								onClick={createOnClick(tile)}
+								title={tile.title}
+								subtitle={tile.subtitle}
 							/>
 						</motion.div>
 					))}
