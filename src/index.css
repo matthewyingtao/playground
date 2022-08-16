@@ -2,9 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+.glow-1::after {
+	filter: drop-shadow(0 0 3px rgba(255, 255, 255, 1));
+}
+.glow-::after {
+	filter: drop-shadow(0 0 5px rgba(255, 255, 255, 1));
+}
+.glow-3::after {
+	filter: drop-shadow(0 0 7px rgba(255, 255, 255, 1));
+}
+
 html,
 body,
 #root {
 	height: 100%;
 	font-family: "Inter", sans-serif;
+}
+
+.bg-gradient-string {
+	background-image: linear-gradient(
+		to bottom,
+		hsla(0, 0%, 100%, 0),
+		hsla(0, 0%, 100%, 1)
+	);
+}
+
+:root {
+	--gutter: 25px;
+}
+
+@media screen and (min-width: 768px) {
+	:root {
+		--gutter: 45px;
+	}
+}
+
+@media screen and (min-width: 1440px) {
+	:root {
+		--gutter: 85px;
+	}
+}
+
+@media screen and (min-width: 1800px) {
+	:root {
+		--gutter: 140px;
+	}
+}
+
+@media screen and (min-width: 2048px) {
+	:root {
+		--gutter: 12vw;
+	}
 }
