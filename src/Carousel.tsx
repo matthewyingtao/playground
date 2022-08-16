@@ -31,8 +31,9 @@ export default function Carousel() {
 
 	const rotate = useMotionValue(0);
 	const spring = useSpring(rotate, {
-		stiffness: 100,
-		damping: 5,
+		stiffness: 150,
+		damping: 2,
+		mass: 2,
 	});
 
 	const bind = useDrag(({ delta: [dx], dragging }) => {
@@ -45,7 +46,7 @@ export default function Carousel() {
 	return (
 		<div
 			ref={emblaRef}
-			className="overflow-hidden pt-40 pl-gutter cursor-grab active:cursor-grabbing"
+			className="bg-teal-300 overflow-hidden pt-40 pl-gutter cursor-grab active:cursor-grabbing"
 			{...bind()}
 		>
 			<div className="flex gap-gutter will-change-transform">
@@ -58,19 +59,19 @@ export default function Carousel() {
 }
 
 function Card({ photo, rotate }: { photo: string; rotate: MotionValue }) {
-	const offsetY = useRef<number>(Math.random() * 80);
+	const offsetY = useRef<number>(Math.random() * 160);
 
 	return (
 		<motion.div
 			style={{
 				rotate: rotate,
 			}}
-			className="relative origin-top flex flex-col isolate items-center flex-shrink-0 w-80 gap-4 pb-20 max-w-[80vw] pt-80"
+			className="relative origin-top flex flex-col isolate items-center flex-shrink-0 w-80 gap-4 pb-64 max-w-[80vw] pt-48"
 		>
 			<div
 				className="absolute w-1 top-0 -z-50 bg-gradient-string"
 				style={{
-					height: `${320 + offsetY.current}px`,
+					height: `${192 + offsetY.current}px`,
 				}}
 			/>
 			<div
