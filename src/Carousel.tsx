@@ -33,7 +33,7 @@ export default function Carousel() {
 	const rotate = useMotionValue(0);
 	const spring = useSpring(rotate, {
 		stiffness: 150,
-		damping: 2,
+		damping: 5,
 		mass: 2,
 	});
 
