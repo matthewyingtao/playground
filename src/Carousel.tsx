@@ -19,6 +19,7 @@ const photos = [
 	"sky.jpg",
 	"water.jpg",
 ];
+
 export default function Carousel() {
 	const wheelGestures = WheelGesturesPlugin();
 	const [emblaRef] = useEmblaCarousel(
