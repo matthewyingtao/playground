@@ -1,9 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useMemo, useRef, useState } from "react";
-import mountain from "./assets/mountain.jpg";
-import sky from "./assets/sky.jpg";
-import water from "./assets/water.jpg";
-import { useElementSize } from "./hooks/useDivSize";
+import { useMemo, useState } from "react";
+import { useElementSize } from "usehooks-ts";
+import mountain from "../assets/mountain.jpg";
+import sky from "../assets/sky.jpg";
+import water from "../assets/water.jpg";
 
 type XPos = "left" | "right";
 type YPos = "top" | "bottom";
@@ -111,8 +111,7 @@ function Tile({
 }
 
 export default function Tiles() {
-	const gridRef = useRef<HTMLDivElement>(null);
-	const containerSize = useElementSize(gridRef);
+	const [gridRef, containerSize] = useElementSize();
 
 	const positionTable = useMemo(
 		() => ({

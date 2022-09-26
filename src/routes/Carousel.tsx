@@ -3,10 +3,10 @@ import useEmblaCarousel from "embla-carousel-react";
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { motion, MotionValue, useMotionValue, useSpring } from "framer-motion";
 import { useRef } from "react";
-import Clip from "./assets/clip.png";
+import Clip from "../assets/clip.png";
 
 const getImageUrl = (path: string) =>
-	new URL(`./assets/${path}`, import.meta.url).href;
+	new URL(`../assets/${path}`, import.meta.url).href;
 
 const photos = [
 	"mountain.jpg",

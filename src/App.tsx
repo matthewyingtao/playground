@@ -1,6 +1,6 @@
 import { Link, Route } from "wouter";
-import Carousel from "./Carousel";
-import Tiles from "./Tiles";
+import Carousel from "./routes/Carousel";
+import Tiles from "./routes/Tiles";
 
 function App() {
 	return (
