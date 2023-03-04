@@ -55,8 +55,6 @@ export default function Lamp() {
 				headX ** 2 + (bottom - headY) ** 2
 			);
 
-			console.log(distanceBetweenLampHeadAndBLCorner);
-
 			const rayX = headX - distanceBetweenLampHeadAndBLCorner;
 			const angle = 15 * (Math.PI / 180);
 			const yOffset = Math.tan(angle) * distanceBetweenLampHeadAndBLCorner;
